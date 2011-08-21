@@ -1,22 +1,28 @@
-#!/bin/sh
-ver=0.4
+#!/bin/bash
 #
-# Aurvote, a tool to vote for favorite packages on AUR for inclusion in [community]
-# <wain@archlinux.fr>
+# aurvote : Tool to vote for favorite AUR's PKGBUILD
 #
+# Copyright (c) 2007-2010 Julien MISCHKOWITZ <wain@archlinux.fr>
+# Copyright (c) 2011 tuxce <tuxce.net@gmail.com>
 #
-#   This program is distributed in the hope that it will be useful,
-#   but WITHOUT ANY WARRANTY; without even the implied warranty of
-#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#   GNU General Public License for more details.
+# This program is free software; you can redistribute it and/or modify it
+# under the terms of the GNU Library General Public License as published
+# by the Free Software Foundation; either version 2, or (at your option)
+# any later version.
 #
-#   You should have received a copy of the GNU General Public License
-#   along with this program; if not, write to the Free Software
-#   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+ver=0.4
+
 TMPDIR=$(mktemp -d)
-CONFIGFILE=~/.config/aurvote
+CONFIGFILE=${XDG_HOME_CONFIG:-~/.config}/aurvote
 AUR_URL="https://aur.archlinux.org/packages.php"
 AUR_URL2="https://aur.archlinux.org/rpc.php?type=info&arg="
 AUR_URL3="https://aur.archlinux.org/packages.php?setlang=en&ID="
@@ -31,7 +37,7 @@ version() {
 usage() {
    echo "aurvote - version $ver"
    echo
-   echo "usage: aurvote <option> <pkgname1> <pkgname2> ..."
+   echo "usage: $0 <option> <pkgname1> <pkgname2> ..."
    echo
    echo "aurvote --version, -V       shows version"
    echo "aurvote --help,    -h       shows this help"
