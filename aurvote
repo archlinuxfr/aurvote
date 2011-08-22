@@ -20,10 +20,10 @@
 #
 
 NAME='aurvote'
-VERSION=1.0
+VERSION=1.1
 
 TMPDIR=${TMPDIR:-/tmp}
-AV_TMP="$TMPDIR/aurvote"
+AV_TMP="$TMPDIR/aurvote-$USER"
 
 CONFIGFILE=${XDG_HOME_CONFIG:-~/.config}/aurvote
 
@@ -130,6 +130,7 @@ aur_vote() {
 }
 
 ### MAIN PROGRAM ###
+umask 077
 [[ -d "$AV_TMP" ]] || mkdir -p "$AV_TMP"
 [[ -d "$AV_TMP" ]] || error "Cannot access to $AV_TMP"
 PID=$$
