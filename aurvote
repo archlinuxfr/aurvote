@@ -35,7 +35,7 @@ AUR_COOKIE="AURSID"
 
 
 version() {
-   echo "$NAME $VERSION"
+    echo "$NAME $VERSION"
 }
 
 usage() {
@@ -62,7 +62,7 @@ error() {
 }
 
 is_cookie_valid() {
-	[[ -e $COOKIE_FILE ]] || return 1
+    [[ -r $COOKIE_FILE ]] || return 1
     local expire
     expire=$(sed -ne '/^\(#HttpOnly_\|[^#]\)/ { s/#HttpOnly_//;p }' "$COOKIE_FILE" |
         awk "{ if (\$1==\"$AUR_DOMAIN\" && \$6==\"$AUR_COOKIE\") print \$5; }")
@@ -70,8 +70,12 @@ is_cookie_valid() {
 }
 
 aur_login() {
-    is_cookie_valid && return 0
-    curl $CURL_OPT -fs -c "$COOKIE_FILE" -d "user=$user" \
+    local args=()
+    if ((PERSIST)); then
+        is_cookie_valid && return 0
+        args=(-d "remember_me=on")
+    fi
+    curl $CURL_OPT -fs -c "$COOKIE_FILE" "${args[@]}" -d "user=$user" \
          --data-urlencode "passwd=$pass" "$AUR_URL" \
          -o "$AV_TMP/login" || error "Unable to access $AUR_URL"
     err=$(sed -ne "s/.*span class='error'>\([^<]*\)<.*/\1/p" "$AV_TMP/login")
@@ -132,16 +136,18 @@ aur_vote() {
 ### MAIN PROGRAM ###
 umask 077
 [[ -d "$AV_TMP" ]] || mkdir -p "$AV_TMP"
-[[ -d "$AV_TMP" ]] || error "Cannot access to $AV_TMP"
+[[ -d "$AV_TMP" && -w "$AV_TMP" ]] || error "Cannot access to $AV_TMP"
 PID=$$
 ACTION="vote"
 IDMODE=0
 pkgnames=()
 CURL_OPT=""
-COOKIE_FILE="$AV_TMP/cookies"
+PERSIST=0
 
 [[ -r "$CONFIGFILE" ]] && source "$CONFIGFILE" ||
     error "Unable to parse $CONFIGFILE"
+
+[[ $COOKIE_FILE ]] && PERSIST=1
 
 while [[ $1 ]]; do
     case $1 in
@@ -153,17 +159,19 @@ while [[ $1 ]]; do
         # IDMODE is designed to be used with yaourt: aur -c --id packagename/aurid
         --id)         IDMODE=1;; 
         --insecure)   CURL_OPT+=" --insecure";; 
-        -k)           shift; COOKIE_FILE="$1";;
+        -k)           PERSIST=1; shift; COOKIE_FILE="$1";;
         --*|-*)       usage; exit 1;;
         *)            pkgnames+=("$1");;
     esac
     shift
 done
+COOKIE_FILE=${COOKIE_FILE:-"$AV_TMP/cookies"}
 
 [[ ! $pkgnames ]] && usage && exit 1
  
 aur_login
 ((! IDMODE)) && aur_ids
+
 case "$ACTION" in
     check)  aur_check_vote;;
     vote)   aur_vote 1;;
