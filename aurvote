@@ -20,12 +20,12 @@
 #
 
 NAME='aurvote'
-VERSION=1.4
+VERSION=1.5
 
 TMPDIR=${TMPDIR:-/tmp}
 AV_TMP="$TMPDIR/aurvote-$USER"
 
-CONFIGFILE=${XDG_HOME_CONFIG:-~/.config}/aurvote
+CONFIGFILE=${XDG_CONFIG_HOME:-~/.config}/aurvote
 
 AUR_URL="https://aur.archlinux.org"
 AUR_URL_LOGIN="$AUR_URL/login/"
@@ -120,7 +120,10 @@ aur_vote() {
 }
 
 create_config_file() {
-    local ans
+    local ans configdir=${CONFIGFILE%/*}
+	if [[ ! -d $configdir ]]; then
+		mkdir -p "$configdir" || error "Unable to create $configdir"
+	fi
     if [[ -f "$CONFIGFILE" ]]; then
         read -p "$CONFIGFILE exists. Replace ? [y/N] " ans
         [[ $ans != 'Y' && $ans != 'y' ]] && return 0
