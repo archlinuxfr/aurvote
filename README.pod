@@ -1,0 +1,15 @@
+=head1 NAME
+
+aurvote - Tool to vote for favorite AUR packages 
+
+=head1 SYNOPSIS
+
+Usage :
+
+  aurvote <option> <pkgname1> <pkgname2> ...
+    --version, -V       shows version
+    --help,    -h       shows this help
+    --check,   -c       check for voted packages
+    --vote,    -v       vote for packages
+    --unvote,  -u       unvote packages
+    --configure         create ~/.config/aurvote
