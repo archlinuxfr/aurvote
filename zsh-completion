@@ -1,0 +1,16 @@
+#compdef aurvote
+
+_aurvote() {
+  local -a options
+
+  options=('--version:shows version'
+           '--help:shows this help'
+           '--check:check for voted packages'
+           '--vote:vote for packages'
+           '--unvote:unvote packages'
+           "--configure:create $HOME/.config/aurvote")
+
+  _describe 'options' options
+}
+
+_aurvote
