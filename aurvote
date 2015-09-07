@@ -78,8 +78,11 @@ aur_login() {
         is_cookie_valid && return 0
         args=(-d "remember_me=on")
     fi
-    if [[ ! $user || ! $pass ]]; then
-        error "$CONFIGFILE must have user name and password. Run:\n$NAME --configure"
+    if [[ ! $user ]]; then
+        error "$CONFIGFILE must have user name. Run:\n$NAME --configure"
+    fi
+    if [[ ! $pass ]]; then
+        read -s -p "AUR Password for user $user: " pass
     fi
     curl $CURL_OPT -L -fs -c "$COOKIE_FILE" "${args[@]}" -d "user=$user" \
          --data-urlencode "passwd=$pass" "$AUR_URL_LOGIN" \
