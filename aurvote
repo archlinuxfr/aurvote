@@ -167,7 +167,8 @@ create_config_file() {
     echo "Creation of $CONFIGFILE"
     read -p "AUR User : " ans
     printf "user=%q\n" "$ans" >> "$CONFIGFILE"
-    read -p "AUR Password : " ans
+    read -s -p "AUR Password : " ans
+    echo
     printf "pass=%q\n" "$ans" >> "$CONFIGFILE"
     read -p "Persistent login ? [Y/n] " ans
     [[ $ans = 'n' || $ans = 'N' ]] && return 0
@@ -200,7 +201,7 @@ while [[ $1 ]]; do
         --vote|-v)    ACTION="vote";;
         --unvote|-u)  ACTION="unvote";;
         --id)         ;; # deprecated
-        --insecure)   CURL_OPT+=" --insecure";; 
+        --insecure)   CURL_OPT+=" --insecure";;
         -k)           PERSIST=1; shift; COOKIE_FILE="$1";;
         --*|-*)       usage; exit 1;;
         *)            pkgnames+=("$1");;
@@ -216,7 +217,7 @@ fi
 COOKIE_FILE=${COOKIE_FILE:-"$AV_TMP/cookies"}
 pkgnames=("${pkgnames[@]%/*}") # compatibility with yaourt <= 1.2.1
 [[ ! $pkgnames ]] && usage && exit 1
- 
+
 aur_login
 
 case "$ACTION" in
