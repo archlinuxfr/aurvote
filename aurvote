@@ -20,7 +20,7 @@
 #
 
 NAME='aurvote'
-VERSION=1.8
+VERSION=1.9
 
 TMPDIR=${TMPDIR:-/tmp}
 AV_TMP="$TMPDIR/aurvote-$USER"
