@@ -170,7 +170,7 @@ create_config_file() {
     echo "Creation of $CONFIGFILE"
     read -p "AUR User : " ans
     printf "user=%q\n" "$ans" >> "$CONFIGFILE"
-    read -s -p "AUR Password : " ans
+    read -s -p "AUR Password (leave empty to not store it and being asked on demand, when no valid cookie is present.) :" ans
     echo
     printf "pass=%q\n" "$ans" >> "$CONFIGFILE"
     read -p "Persistent login ? [Y/n] " ans
