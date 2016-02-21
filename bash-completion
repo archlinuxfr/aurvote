@@ -1,0 +1,39 @@
+# Bash completion for aurvote
+#
+# This file is part of aurvote
+
+_aurvote() {
+  local cur prev words cword
+  _init_completion || return
+
+  local options='\
+    --check       -c
+    --configure
+    --help        -h
+    --unvote      -u
+    --version     -V
+    --vote        -v
+  '
+
+  # First parameter should be an option
+  if ((cword == 1)); then
+    COMPREPLY=($(compgen -W "$options"  -- "$cur"))
+    return 0
+  fi
+
+  # Try to complete package name after relevant options
+  if [[ $prev =~ ^-[cuv]$ ]] || [[ $prev =~ ^--(check|(un)?vote)$ ]]; then
+    # Use aurtab cache if available (https://github.com/worzel666/aurtab)
+    local aurtab_cache=$HOME/.cache/aurtab/pkglist.gz
+    if [ -f $aurtab_cache ]; then
+      COMPREPLY=($(compgen -W "$(command gzip -cd $aurtab_cache)" -- "$cur"))
+    # Fallback to foreign packages
+    else
+      COMPREPLY=($(compgen -W "$(command pacman -Qqm)" -- "$cur"))
+    fi
+  fi
+}
+
+complete -F _aurvote aurvote
+
+# vi: set ft=sh ts=2 sw=2 et:
