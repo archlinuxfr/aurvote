@@ -109,6 +109,7 @@ aur_check_vote() {
     local pkg
     for pkg in "${pkgnames[@]}"; do
         aur_get_pkg_page "$pkg"
+        echo -n "$pkg... " 
         if sed '/<div id="news">/q' "$AV_TMP/$pkg.$PID" | grep -q /unvote/; then
             echo "already voted"
         elif sed '/<div id="news">/q' "$AV_TMP/$pkg.$PID" | grep -q /vote/; then
