@@ -219,7 +219,14 @@ fi
 
 COOKIE_FILE=${COOKIE_FILE:-"$AV_TMP/cookies"}
 pkgnames=("${pkgnames[@]%/*}") # compatibility with yaourt <= 1.2.1
-[[ ! $pkgnames ]] && usage && exit 1
+
+if [[ ! $pkgnames ]]; then
+    if (( ACTION=="check" )); then
+        pkgnames=($(pacman -Qmq))
+    else
+        usage && exit 1
+    fi
+fi
 
 aur_login
 
