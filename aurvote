@@ -221,7 +221,7 @@ COOKIE_FILE=${COOKIE_FILE:-"$AV_TMP/cookies"}
 pkgnames=("${pkgnames[@]%/*}") # compatibility with yaourt <= 1.2.1
 
 if [[ ! $pkgnames ]]; then
-    if [[ ACTION=="check" ]]; then
+    if [[ $ACTION == "check" ]]; then
         pkgnames=($(pacman -Qmq))
     else
         usage && exit 1
